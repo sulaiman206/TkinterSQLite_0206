@@ -247,6 +247,21 @@ def proses_prediksi():
         text=f"Hasil Prediksi: {hasil}"
     )
 
+if hasil == "Rendah":
+    label_hasil.config(fg="green")
+
+elif hasil == "Waspada":
+    label_hasil.config(fg="orange")
+
+elif hasil == "Sedang":
+    label_hasil.config(fg="blue")
+
+elif hasil == "Tinggi":
+    label_hasil.config(fg="red")
+
+elif hasil == "Sangat Tinggi":
+    label_hasil.config(fg="darkred")
+
     simpan_pasien(
         nama,
         usia,
