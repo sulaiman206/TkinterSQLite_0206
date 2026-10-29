@@ -71,3 +71,22 @@ entry_bmi.grid(row=3, column=1, padx=10, pady=8)
 
 import tkinter as tk
 from tkinter import ttk
+
+tk.Label(
+    form_frame,
+    text="Riwayat Diabetes Orang Tua"
+).grid(row=4, column=0, padx=10, pady=8)
+
+combo_ortu = ttk.Combobox(
+    form_frame,
+    values=["Ya", "Tidak"],
+    width=32,
+    state="readonly"
+)
+
+combo_ortu.grid(
+    row=4,
+    column=1,
+    padx=10,
+    pady=8
+)
