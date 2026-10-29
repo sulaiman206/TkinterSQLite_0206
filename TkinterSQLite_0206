@@ -227,3 +227,41 @@ def baca_form():
         return None
 
     return nama, usia, gula_darah, bmi, riwayat_ortu
+
+def proses_prediksi():
+
+    data = baca_form()
+
+    if data is None:
+        return
+
+    nama, usia, gula_darah, bmi, riwayat_ortu = data
+
+    hasil = prediksi_diabetes(
+        gula_darah,
+        bmi,
+        riwayat_ortu
+    )
+
+    label_hasil.config(
+        text=f"Hasil Prediksi: {hasil}"
+    )
+
+label_hasil = tk.Label(
+    root,
+    text="Hasil Prediksi: -",
+    font=("Arial", 16, "bold")
+)
+
+label_hasil.pack(pady=20)
+
+btn_prediksi = tk.Button(
+    root,
+    text="Prediksi",
+    width=20,
+    command=proses_prediksi
+)
+
+btn_prediksi.pack(pady=10)
+
+
