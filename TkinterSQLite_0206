@@ -152,3 +152,78 @@ def prediksi_diabetes(gula_darah, bmi, riwayat_ortu):
 
         else:
             return "Rendah"
+
+from tkinter import messagebox
+
+
+def baca_form():
+
+    nama = entry_nama.get().strip()
+    usia = entry_usia.get().strip()
+    gula_darah = entry_gula.get().strip()
+    bmi = entry_bmi.get().strip()
+    riwayat_ortu = combo_ortu.get().strip()
+
+    if not nama or not usia or not gula_darah or not bmi or not riwayat_ortu:
+        messagebox.showwarning(
+            "Data Tidak Lengkap",
+            "Semua data harus diisi."
+        )
+        return None
+
+    if not nama.replace(" ", "").isalpha():
+        messagebox.showwarning(
+            "Nama Tidak Valid",
+            "Nama pasien hanya boleh berisi huruf."
+        )
+        return None
+
+    try:
+        usia = int(usia)
+    except ValueError:
+        messagebox.showwarning(
+            "Usia Tidak Valid",
+            "Usia harus berupa angka."
+        )
+        return None
+
+    if usia <= 0 or usia > 120:
+        messagebox.showwarning(
+            "Usia Tidak Valid",
+            "Usia harus antara 1 sampai 120 tahun."
+        )
+        return None
+
+    try:
+        gula_darah = float(gula_darah)
+    except ValueError:
+        messagebox.showwarning(
+            "Gula Darah Tidak Valid",
+            "Kadar gula darah harus berupa angka."
+        )
+        return None
+
+    if gula_darah <= 0:
+        messagebox.showwarning(
+            "Gula Darah Tidak Valid",
+            "Kadar gula darah harus lebih dari 0."
+        )
+        return None
+
+    try:
+        bmi = float(bmi)
+    except ValueError:
+        messagebox.showwarning(
+            "BMI Tidak Valid",
+            "BMI harus berupa angka."
+        )
+        return None
+
+    if bmi <= 0 or bmi > 100:
+        messagebox.showwarning(
+            "BMI Tidak Valid",
+            "BMI tidak valid."
+        )
+        return None
+
+    return nama, usia, gula_darah, bmi, riwayat_ortu
