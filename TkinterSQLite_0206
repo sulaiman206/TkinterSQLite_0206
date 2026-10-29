@@ -1,0 +1,15 @@
+import tkinter as tk
+
+root = tk.Tk()
+root.title("Aplikasi Prediksi Risiko Diabetes")
+root.geometry("600x650")
+
+label_title = tk.Label(
+    root,
+    text="APLIKASI PREDIKSI RISIKO DIABETES",
+    font=("Arial", 18, "bold")
+)
+
+label_title.pack(pady=30)
+
+root.mainloop()
