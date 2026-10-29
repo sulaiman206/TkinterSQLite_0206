@@ -322,3 +322,73 @@ def simpan_pasien(
     ))
 
 
+
+
+def get_all_patients():
+
+    return run_query("""
+        SELECT
+            id,
+            nama_pasien,
+            usia,
+            gula_darah,
+            bmi,
+            riwayat_ortu,
+            hasil_prediksi
+        FROM pasien
+        ORDER BY id DESC
+    """)
+
+def lihat_data():
+
+    data_window = tk.Toplevel(root)
+
+    data_window.title("Data Pasien")
+    data_window.geometry("950x450")
+
+    columns = (
+        "id",
+        "nama",
+        "usia",
+        "gula",
+        "bmi",
+        "ortu",
+        "hasil"
+    )
+
+    tree = ttk.Treeview(
+        data_window,
+        columns=columns,
+        show="headings"
+    )
+
+    tree.heading("id", text="ID")
+    tree.heading("nama", text="Nama Pasien")
+    tree.heading("usia", text="Usia")
+    tree.heading("gula", text="Gula Darah")
+    tree.heading("bmi", text="BMI")
+    tree.heading("ortu", text="Riwayat Ortu")
+    tree.heading("hasil", text="Hasil Prediksi")
+
+    tree.pack(
+        fill="both",
+        expand=True,
+        padx=10,
+        pady=10
+    )
+
+    for row in get_all_patients():
+        tree.insert(
+            "",
+            tk.END,
+            values=row
+        )
+
+btn_data = tk.Button(
+    root,
+    text="Lihat Data",
+    width=20,
+    command=lihat_data
+)
+
+btn_data.pack(pady=5)
