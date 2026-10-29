@@ -1,97 +1,11 @@
 import tkinter as tk
-
-root = tk.Tk()
-root.title("Aplikasi Prediksi Risiko Diabetes")
-root.geometry("600x650")
-
-label_title = tk.Label(
-    root,
-    text="APLIKASI PREDIKSI RISIKO DIABETES",
-    font=("Arial", 18, "bold")
-)
-
-label_title.pack(pady=30)
-
-root.mainloop()
-
-form_frame = tk.Frame(root)
-form_frame.pack(pady=20)
-
-tk.Label(
-    form_frame,
-    text="Nama Pasien"
-).grid(row=0, column=0, padx=10, pady=8)
-
-entry_nama = tk.Entry(
-    form_frame,
-    width=35
-)
-
-entry_nama.grid(row=0, column=1, padx=10, pady=8)
-
-
-tk.Label(
-    form_frame,
-    text="Usia"
-).grid(row=1, column=0, padx=10, pady=8)
-
-entry_usia = tk.Entry(
-    form_frame,
-    width=35
-)
-
-entry_usia.grid(row=1, column=1, padx=10, pady=8)
-
-
-tk.Label(
-    form_frame,
-    text="Kadar Gula Darah (mg/dL)"
-).grid(row=2, column=0, padx=10, pady=8)
-
-entry_gula = tk.Entry(
-    form_frame,
-    width=35
-)
-
-entry_gula.grid(row=2, column=1, padx=10, pady=8)
-
-
-tk.Label(
-    form_frame,
-    text="BMI"
-).grid(row=3, column=0, padx=10, pady=8)
-
-entry_bmi = tk.Entry(
-    form_frame,
-    width=35
-)
-
-entry_bmi.grid(row=3, column=1, padx=10, pady=8)
-
-
-import tkinter as tk
-from tkinter import ttk
-
-tk.Label(
-    form_frame,
-    text="Riwayat Diabetes Orang Tua"
-).grid(row=4, column=0, padx=10, pady=8)
-
-combo_ortu = ttk.Combobox(
-    form_frame,
-    values=["Ya", "Tidak"],
-    width=32,
-    state="readonly"
-)
-
-combo_ortu.grid(
-    row=4,
-    column=1,
-    padx=10,
-    pady=8
-)
-
+from tkinter import ttk, messagebox
 import sqlite3
+
+
+# =========================================================
+# DATABASE
+# =========================================================
 
 DB_NAME = "prediksi_diabetes.db"
 
@@ -120,10 +34,13 @@ def init_db():
     """)
 
 
-init_db()
+# =========================================================
+# PREDICTION FUNCTION
+# =========================================================
 
 def prediksi_diabetes(gula_darah, bmi, riwayat_ortu):
 
+    # Gula darah >= 200
     if gula_darah >= 200:
 
         if bmi >= 30 or riwayat_ortu == "Ya":
@@ -131,6 +48,7 @@ def prediksi_diabetes(gula_darah, bmi, riwayat_ortu):
         else:
             return "Tinggi"
 
+    # Gula darah 140 - 199
     elif gula_darah >= 140:
 
         if bmi >= 30 and riwayat_ortu == "Ya":
@@ -138,10 +56,10 @@ def prediksi_diabetes(gula_darah, bmi, riwayat_ortu):
         else:
             return "Sedang"
 
+    # Gula darah < 140
     else:
 
         if bmi >= 30:
-
             if riwayat_ortu == "Ya":
                 return "Sedang"
             else:
@@ -153,164 +71,16 @@ def prediksi_diabetes(gula_darah, bmi, riwayat_ortu):
         else:
             return "Rendah"
 
-from tkinter import messagebox
 
+# =========================================================
+# SAVE PATIENT
+# =========================================================
 
-def baca_form():
-
-    nama = entry_nama.get().strip()
-    usia = entry_usia.get().strip()
-    gula_darah = entry_gula.get().strip()
-    bmi = entry_bmi.get().strip()
-    riwayat_ortu = combo_ortu.get().strip()
-
-    if not nama or not usia or not gula_darah or not bmi or not riwayat_ortu:
-        messagebox.showwarning(
-            "Data Tidak Lengkap",
-            "Semua data harus diisi."
-        )
-        return None
-
-    if not nama.replace(" ", "").isalpha():
-        messagebox.showwarning(
-            "Nama Tidak Valid",
-            "Nama pasien hanya boleh berisi huruf."
-        )
-        return None
-
-    try:
-        usia = int(usia)
-    except ValueError:
-        messagebox.showwarning(
-            "Usia Tidak Valid",
-            "Usia harus berupa angka."
-        )
-        return None
-
-    if usia <= 0 or usia > 120:
-        messagebox.showwarning(
-            "Usia Tidak Valid",
-            "Usia harus antara 1 sampai 120 tahun."
-        )
-        return None
-
-    try:
-        gula_darah = float(gula_darah)
-    except ValueError:
-        messagebox.showwarning(
-            "Gula Darah Tidak Valid",
-            "Kadar gula darah harus berupa angka."
-        )
-        return None
-
-    if gula_darah <= 0:
-        messagebox.showwarning(
-            "Gula Darah Tidak Valid",
-            "Kadar gula darah harus lebih dari 0."
-        )
-        return None
-
-    try:
-        bmi = float(bmi)
-    except ValueError:
-        messagebox.showwarning(
-            "BMI Tidak Valid",
-            "BMI harus berupa angka."
-        )
-        return None
-
-    if bmi <= 0 or bmi > 100:
-        messagebox.showwarning(
-            "BMI Tidak Valid",
-            "BMI tidak valid."
-        )
-        return None
-
-    return nama, usia, gula_darah, bmi, riwayat_ortu
-
-def proses_prediksi():
-
-    data = baca_form()
-
-    if data is None:
-        return
-
-    nama, usia, gula_darah, bmi, riwayat_ortu = data
-
-    hasil = prediksi_diabetes(
-        gula_darah,
-        bmi,
-        riwayat_ortu
-    )
-
-    label_hasil.config(
-        text=f"Hasil Prediksi: {hasil}"
-    )
-
-if hasil == "Rendah":
-    label_hasil.config(fg="green")
-
-elif hasil == "Waspada":
-    label_hasil.config(fg="orange")
-
-elif hasil == "Sedang":
-    label_hasil.config(fg="blue")
-
-elif hasil == "Tinggi":
-    label_hasil.config(fg="red")
-
-elif hasil == "Sangat Tinggi":
-    label_hasil.config(fg="darkred")
-
-    simpan_pasien(
-        nama,
-        usia,
-        gula_darah,
-        bmi,
-        riwayat_ortu,
-        hasil
-    )
-
-    messagebox.showinfo(
-        "Berhasil",
-        "Data berhasil disimpan."
-    )
-label_hasil = tk.Label(
-    root,
-    text="Hasil Prediksi: -",
-    font=("Arial", 16, "bold")
-)
-
-label_hasil.pack(pady=20)
-
-btn_prediksi = tk.Button(
-    root,
-    text="Prediksi",
-    width=20,
-    command=proses_prediksi
-)
-
-btn_prediksi.pack(pady=10)
-
-def simpan_pasien(
-    nama,
-    usia,
-    gula_darah,
-    bmi,
-    riwayat_ortu,
-    hasil
-):
+def simpan_pasien(nama, usia, gula_darah, bmi, riwayat_ortu, hasil):
 
     run_query("""
         INSERT INTO pasien
-        (
-            nama_pasien,
-            usia,
-            gula_darah,
-            bmi,
-            riwayat_ortu,
-            hasil_prediksi
-        )
+        (nama_pasien, usia, gula_darah, bmi, riwayat_ortu, hasil_prediksi)
         VALUES (?, ?, ?, ?, ?, ?)
     """, (
         nama,
@@ -322,7 +92,9 @@ def simpan_pasien(
     ))
 
 
-
+# =========================================================
+# GET ALL PATIENT DATA
+# =========================================================
 
 def get_all_patients():
 
@@ -339,60 +111,164 @@ def get_all_patients():
         ORDER BY id DESC
     """)
 
-def lihat_data():
 
-    data_window = tk.Toplevel(root)
+# =========================================================
+# VALIDATE INPUT
+# =========================================================
 
-    data_window.title("Data Pasien")
-    data_window.geometry("950x450")
+def baca_form():
 
-    columns = (
-        "id",
-        "nama",
-        "usia",
-        "gula",
-        "bmi",
-        "ortu",
-        "hasil"
-    )
+    nama = entry_nama.get().strip()
+    usia = entry_usia.get().strip()
+    gula_darah = entry_gula.get().strip()
+    bmi = entry_bmi.get().strip()
+    riwayat_ortu = combo_ortu.get().strip()
 
-    tree = ttk.Treeview(
-        data_window,
-        columns=columns,
-        show="headings"
-    )
+    # Check empty fields
+    if not nama or not usia or not gula_darah or not bmi or not riwayat_ortu:
 
-    tree.heading("id", text="ID")
-    tree.heading("nama", text="Nama Pasien")
-    tree.heading("usia", text="Usia")
-    tree.heading("gula", text="Gula Darah")
-    tree.heading("bmi", text="BMI")
-    tree.heading("ortu", text="Riwayat Ortu")
-    tree.heading("hasil", text="Hasil Prediksi")
-
-    tree.pack(
-        fill="both",
-        expand=True,
-        padx=10,
-        pady=10
-    )
-
-    for row in get_all_patients():
-        tree.insert(
-            "",
-            tk.END,
-            values=row
+        messagebox.showwarning(
+            "Data Tidak Lengkap",
+            "Semua data harus diisi."
         )
 
-btn_data = tk.Button(
-    root,
-    text="Lihat Data",
-    width=20,
-    command=lihat_data
-)
+        return None
 
-btn_data.pack(pady=5)
+    # Validate name
+    if not nama.replace(" ", "").isalpha():
 
+        messagebox.showwarning(
+            "Nama Tidak Valid",
+            "Nama pasien hanya boleh berisi huruf."
+        )
+
+        return None
+
+    # Validate age
+    try:
+        usia = int(usia)
+    except ValueError:
+
+        messagebox.showwarning(
+            "Usia Tidak Valid",
+            "Usia harus berupa angka."
+        )
+
+        return None
+
+    if usia <= 0 or usia > 120:
+
+        messagebox.showwarning(
+            "Usia Tidak Valid",
+            "Usia harus antara 1 sampai 120 tahun."
+        )
+
+        return None
+
+    # Validate blood sugar
+    try:
+        gula_darah = float(gula_darah)
+    except ValueError:
+
+        messagebox.showwarning(
+            "Gula Darah Tidak Valid",
+            "Kadar gula darah harus berupa angka."
+        )
+
+        return None
+
+    if gula_darah <= 0:
+
+        messagebox.showwarning(
+            "Gula Darah Tidak Valid",
+            "Kadar gula darah harus lebih dari 0."
+        )
+
+        return None
+
+    # Validate BMI
+    try:
+        bmi = float(bmi)
+    except ValueError:
+
+        messagebox.showwarning(
+            "BMI Tidak Valid",
+            "BMI harus berupa angka."
+        )
+
+        return None
+
+    if bmi <= 0 or bmi > 100:
+
+        messagebox.showwarning(
+            "BMI Tidak Valid",
+            "BMI harus berada dalam nilai yang wajar."
+        )
+
+        return None
+
+    return nama, usia, gula_darah, bmi, riwayat_ortu
+
+
+# =========================================================
+# PREDICT BUTTON
+# =========================================================
+
+def proses_prediksi():
+
+    data = baca_form()
+
+    if data is None:
+        return
+
+    nama, usia, gula_darah, bmi, riwayat_ortu = data
+
+    hasil = prediksi_diabetes(
+        gula_darah,
+        bmi,
+        riwayat_ortu
+    )
+
+    # Display result
+    label_hasil.config(
+        text=f"Hasil Prediksi: {hasil}"
+    )
+
+    # Change result color
+    if hasil == "Rendah":
+        label_hasil.config(fg="green")
+
+    elif hasil == "Waspada":
+        label_hasil.config(fg="orange")
+
+    elif hasil == "Sedang":
+        label_hasil.config(fg="blue")
+
+    elif hasil == "Tinggi":
+        label_hasil.config(fg="red")
+
+    elif hasil == "Sangat Tinggi":
+        label_hasil.config(fg="darkred")
+
+    # Save to database
+    simpan_pasien(
+        nama,
+        usia,
+        gula_darah,
+        bmi,
+        riwayat_ortu,
+        hasil
+    )
+
+    messagebox.showinfo(
+        "Berhasil",
+        "Data pasien dan hasil prediksi berhasil disimpan."
+    )
+
+
+# =========================================================
+# CLEAR FORM
+# =========================================================
 
 def clear_form():
 
@@ -408,11 +284,342 @@ def clear_form():
         fg="black"
     )
 
-btn_clear = tk.Button(
+
+# =========================================================
+# VIEW DATA
+# =========================================================
+
+def lihat_data():
+
+    data_window = tk.Toplevel(root)
+
+    data_window.title("Data Pasien")
+    data_window.geometry("950x450")
+
+    title = tk.Label(
+        data_window,
+        text="Riwayat Data Pasien",
+        font=("Arial", 16, "bold")
+    )
+
+    title.pack(pady=10)
+
+    # Frame for Treeview
+    frame = tk.Frame(data_window)
+    frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+    columns = (
+        "id",
+        "nama",
+        "usia",
+        "gula",
+        "bmi",
+        "ortu",
+        "hasil"
+    )
+
+    tree = ttk.Treeview(
+        frame,
+        columns=columns,
+        show="headings"
+    )
+
+    # Column headings
+    tree.heading("id", text="ID")
+    tree.heading("nama", text="Nama Pasien")
+    tree.heading("usia", text="Usia")
+    tree.heading("gula", text="Gula Darah")
+    tree.heading("bmi", text="BMI")
+    tree.heading("ortu", text="Riwayat Ortu")
+    tree.heading("hasil", text="Hasil Prediksi")
+
+    # Column widths
+    tree.column("id", width=50)
+    tree.column("nama", width=180)
+    tree.column("usia", width=70)
+    tree.column("gula", width=100)
+    tree.column("bmi", width=80)
+    tree.column("ortu", width=100)
+    tree.column("hasil", width=130)
+
+    # Scrollbar
+    scrollbar = ttk.Scrollbar(
+        frame,
+        orient="vertical",
+        command=tree.yview
+    )
+
+    tree.configure(
+        yscrollcommand=scrollbar.set
+    )
+
+    tree.pack(
+        side="left",
+        fill="both",
+        expand=True
+    )
+
+    scrollbar.pack(
+        side="right",
+        fill="y"
+    )
+
+    # Insert database data
+    data = get_all_patients()
+
+    for row in data:
+        tree.insert(
+            "",
+            tk.END,
+            values=row
+        )
+
+
+# =========================================================
+# MAIN WINDOW
+# =========================================================
+
+init_db()
+
+root = tk.Tk()
+
+root.title("Aplikasi Prediksi Risiko Diabetes")
+
+root.geometry("600x650")
+
+root.resizable(False, False)
+
+
+# =========================================================
+# TITLE
+# =========================================================
+
+label_title = tk.Label(
     root,
+    text="APLIKASI PREDIKSI RISIKO DIABETES",
+    font=("Arial", 18, "bold")
+)
+
+label_title.pack(pady=20)
+
+
+label_subtitle = tk.Label(
+    root,
+    text="Python Tkinter + SQLite",
+    font=("Arial", 11)
+)
+
+label_subtitle.pack(pady=5)
+
+
+# =========================================================
+# FORM FRAME
+# =========================================================
+
+form_frame = tk.Frame(root)
+
+form_frame.pack(pady=20)
+
+
+# Nama
+tk.Label(
+    form_frame,
+    text="Nama Pasien",
+    font=("Arial", 11)
+).grid(
+    row=0,
+    column=0,
+    sticky="w",
+    padx=10,
+    pady=8
+)
+
+entry_nama = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_nama.grid(
+    row=0,
+    column=1,
+    padx=10,
+    pady=8
+)
+
+
+# Usia
+tk.Label(
+    form_frame,
+    text="Usia",
+    font=("Arial", 11)
+).grid(
+    row=1,
+    column=0,
+    sticky="w",
+    padx=10,
+    pady=8
+)
+
+entry_usia = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_usia.grid(
+    row=1,
+    column=1,
+    padx=10,
+    pady=8
+)
+
+
+# Gula darah
+tk.Label(
+    form_frame,
+    text="Kadar Gula Darah (mg/dL)",
+    font=("Arial", 11)
+).grid(
+    row=2,
+    column=0,
+    sticky="w",
+    padx=10,
+    pady=8
+)
+
+entry_gula = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_gula.grid(
+    row=2,
+    column=1,
+    padx=10,
+    pady=8
+)
+
+
+# BMI
+tk.Label(
+    form_frame,
+    text="BMI",
+    font=("Arial", 11)
+).grid(
+    row=3,
+    column=0,
+    sticky="w",
+    padx=10,
+    pady=8
+)
+
+entry_bmi = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_bmi.grid(
+    row=3,
+    column=1,
+    padx=10,
+    pady=8
+)
+
+
+# Riwayat orang tua
+tk.Label(
+    form_frame,
+    text="Riwayat Diabetes Orang Tua",
+    font=("Arial", 11)
+).grid(
+    row=4,
+    column=0,
+    sticky="w",
+    padx=10,
+    pady=8
+)
+
+combo_ortu = ttk.Combobox(
+    form_frame,
+    values=["Ya", "Tidak"],
+    width=32,
+    state="readonly"
+)
+
+combo_ortu.grid(
+    row=4,
+    column=1,
+    padx=10,
+    pady=8
+)
+
+
+# =========================================================
+# RESULT
+# =========================================================
+
+label_hasil = tk.Label(
+    root,
+    text="Hasil Prediksi: -",
+    font=("Arial", 16, "bold"),
+    fg="black"
+)
+
+label_hasil.pack(pady=20)
+
+
+# =========================================================
+# BUTTONS
+# =========================================================
+
+button_frame = tk.Frame(root)
+
+button_frame.pack(pady=10)
+
+
+btn_prediksi = tk.Button(
+    button_frame,
+    text="Prediksi & Simpan",
+    width=18,
+    command=proses_prediksi
+)
+
+btn_prediksi.grid(
+    row=0,
+    column=0,
+    padx=5
+)
+
+
+btn_clear = tk.Button(
+    button_frame,
     text="Clear",
-    width=20,
+    width=12,
     command=clear_form
 )
 
-btn_clear.pack(pady=5)
+btn_clear.grid(
+    row=0,
+    column=1,
+    padx=5
+)
+
+
+btn_data = tk.Button(
+    button_frame,
+    text="Lihat Data",
+    width=12,
+    command=lihat_data
+)
+
+btn_data.grid(
+    row=0,
+    column=2,
+    padx=5
+)
+
+
+# =========================================================
+# START PROGRAM
+# =========================================================
+
+root.mainloop()
