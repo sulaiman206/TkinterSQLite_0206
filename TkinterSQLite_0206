@@ -13,3 +13,57 @@ label_title = tk.Label(
 label_title.pack(pady=30)
 
 root.mainloop()
+
+form_frame = tk.Frame(root)
+form_frame.pack(pady=20)
+
+tk.Label(
+    form_frame,
+    text="Nama Pasien"
+).grid(row=0, column=0, padx=10, pady=8)
+
+entry_nama = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_nama.grid(row=0, column=1, padx=10, pady=8)
+
+
+tk.Label(
+    form_frame,
+    text="Usia"
+).grid(row=1, column=0, padx=10, pady=8)
+
+entry_usia = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_usia.grid(row=1, column=1, padx=10, pady=8)
+
+
+tk.Label(
+    form_frame,
+    text="Kadar Gula Darah (mg/dL)"
+).grid(row=2, column=0, padx=10, pady=8)
+
+entry_gula = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_gula.grid(row=2, column=1, padx=10, pady=8)
+
+
+tk.Label(
+    form_frame,
+    text="BMI"
+).grid(row=3, column=0, padx=10, pady=8)
+
+entry_bmi = tk.Entry(
+    form_frame,
+    width=35
+)
+
+entry_bmi.grid(row=3, column=1, padx=10, pady=8)
